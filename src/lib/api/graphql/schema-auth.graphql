@@ -2,15 +2,8 @@
 ### Do not make changes to this file directly
 
 
-type Mutation {
-  users: User
-}
-
 type Query {
-  users: [User]!
-}
-
-type Subscription {
+  someAuthMethod: Boolean
   users: [User]!
 }
 

@@ -1,11 +1,13 @@
 import { join } from 'path'
 
-import { makeSchema } from 'nexus'
+import { makeSchema, fieldAuthorizePlugin } from 'nexus'
 
-import * as types from './types'
+import * as Scalars from './types/scalars'
+import * as User from './types/user'
 
 const schema = makeSchema({
-  types,
+  types: [Scalars, User],
+  plugins: [fieldAuthorizePlugin()],
   outputs: process.env.TS_NODE_DEV
     ? {
         typegen: join(__dirname, '../../../../node_modules/@types/nexus-typegen/index.d.ts'),

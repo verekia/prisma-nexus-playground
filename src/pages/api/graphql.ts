@@ -1,14 +1,24 @@
+import http from 'http'
+
 import { ApolloServer } from 'apollo-server-micro'
-import { PrismaClient } from '@prisma/client'
 
 import schema from '../../lib/api/graphql/schema'
-
-const prisma = new PrismaClient()
 
 export const config = {
   api: { bodyParser: false },
 }
 
-export default new ApolloServer({ schema, context: () => ({ prisma }) }).createHandler({
-  path: '/api/graphql',
+const server = new ApolloServer({
+  schema,
+  subscriptions: {
+    path: '/api/graphql',
+    keepAlive: 9000,
+    onConnect: () => console.log('connected'),
+    onDisconnect: () => console.log('disconnected'),
+  },
 })
+const handler = server.createHandler({ path: '/api/graphql' })
+const httpServer = new http.Server(handler)
+server.installSubscriptionHandlers(httpServer)
+
+export default handler
